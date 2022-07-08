@@ -12,7 +12,7 @@ class ReactiveEffect {
     // 触发函数执行
     run() {
         activeEffect = this
-        this._fn()
+        return this._fn()
     }
 }
 
@@ -22,6 +22,8 @@ export function effect(fn) {
     const _effect = new ReactiveEffect(fn)
     // 触发run执行当前收集函数
     _effect.run()
+    // 这里使用bind指定this，不然直接return出去会使this指向window
+    return _effect.run.bind(_effect)
 }
 
 // 依赖收集
@@ -57,4 +59,3 @@ export function trigger(target, key) {
         effect.run()
     }
 }
-
