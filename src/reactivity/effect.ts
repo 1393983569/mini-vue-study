@@ -5,7 +5,7 @@ let activeEffect: any = null
 // 处理effect dep的类
 class ReactiveEffect {
     private _fn: any
-    constructor(fn) {
+    constructor(fn, public scheduler?) {
         // 初始化赋值当前执行函数
         this._fn = fn
     }
@@ -17,9 +17,9 @@ class ReactiveEffect {
 }
 
 // 初始化时就会执行一次
-export function effect(fn) {
+export function effect(fn, options:any = {}) {
     // 实例化
-    const _effect = new ReactiveEffect(fn)
+    const _effect = new ReactiveEffect(fn, options.scheduler)
     // 触发run执行当前收集函数
     _effect.run()
     // 这里使用bind指定this，不然直接return出去会使this指向window
@@ -56,6 +56,10 @@ export function trigger(target, key) {
     if (!deps) return 
     // 循环执行
     for (let effect of deps) {
-        effect.run()
+        if (effect.scheduler) {
+            effect.scheduler()
+        } else {
+            effect.run()
+        }
     }
 }
