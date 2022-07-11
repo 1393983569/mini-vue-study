@@ -5,6 +5,9 @@ let activeEffect: any = null
 // 处理effect dep的类
 class ReactiveEffect {
     private _fn: any
+    deps: any = []
+    // 防止重复触发stop
+    active = true
     constructor(fn, public scheduler?) {
         // 初始化赋值当前执行函数
         this._fn = fn
@@ -14,6 +17,19 @@ class ReactiveEffect {
         activeEffect = this
         return this._fn()
     }
+    stop() {
+        if (this.active) {
+            this.deps.forEach(dep => {
+                if (dep.has(this)) {
+                    dep.delete(this)
+                }
+            })
+        }
+    }
+}
+
+export function stop (runner) {
+    runner.effect.stop()
 }
 
 // 初始化时就会执行一次
@@ -23,7 +39,9 @@ export function effect(fn, options:any = {}) {
     // 触发run执行当前收集函数
     _effect.run()
     // 这里使用bind指定this，不然直接return出去会使this指向window
-    return _effect.run.bind(_effect)
+    const runner: any =  _effect.run.bind(_effect)
+    runner.effect = _effect
+    return runner
 }
 
 // 依赖收集
@@ -43,6 +61,8 @@ export function track(target, key) {
 
     if (activeEffect) {
         dep.add(activeEffect)
+        // 反向收集依赖用于实现stop
+        activeEffect.deps.push(dep)
     }
 
 }
@@ -63,3 +83,5 @@ export function trigger(target, key) {
         }
     }
 }
+
+

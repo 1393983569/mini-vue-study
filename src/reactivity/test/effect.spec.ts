@@ -1,6 +1,6 @@
 // effect.spec.ts
 import { reactive } from "../reactive";
-import { effect } from "../effect";
+import { effect, stop } from "../effect";
 
 describe("effect", () => {
     it("happy path", () => {
@@ -26,9 +26,7 @@ describe("effect", () => {
           return "foo";
         });
         expect(foo).toBe(11);
-    
         const r = runner();
-    
         expect(r).toBe("foo");
         expect(foo).toBe(12);
       });
@@ -56,6 +54,24 @@ describe("effect", () => {
         // 只有当调用 run 时才会执行传入的函数
         run()
         expect(dummy).toBe(2)
+      })
+      it("stop", () => {
+        let dummy;
+        const obj = reactive({ prop: 1 });
+        const runner = effect(() => {
+          dummy = obj.prop;
+        });
+        // 执行stop函数前，obj.prop发生变化
+        obj.prop = 2;
+        // dummy也会对应发生变化
+        expect(dummy).toBe(2);
+        // 调用stop后
+        stop(runner);
+        // obj.prop发生变化，dummy不会发生变化了
+        obj.prop = 3;
+        expect(dummy).toBe(2);
+        runner();
+        expect(dummy).toBe(3);
       })
 });
 
