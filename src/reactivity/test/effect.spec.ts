@@ -73,5 +73,24 @@ describe("effect", () => {
         runner();
         expect(dummy).toBe(3);
       })
+      it('onStop', () => {
+        const obj = reactive({
+            foo: 1,
+        })
+        const onStop = jest.fn()
+        let dummy
+        // onStop 是一个函数，也是 effect 的 option
+        const runner = effect(
+            () => {
+                dummy = obj.foo
+            },
+            {
+                onStop,
+            }
+        )
+        // 在调用 stop 的时候，onStop 也会执行
+        stop(runner)
+        expect(onStop).toBeCalledTimes(1)
+    })
 });
 

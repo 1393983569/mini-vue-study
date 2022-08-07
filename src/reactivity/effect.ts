@@ -1,3 +1,5 @@
+import { extend } from '../shared' 
+
 // 存储依赖的weakMap
 const targetMap = new WeakMap();
 // 保存当前执行的函数（dep）
@@ -6,6 +8,7 @@ let activeEffect: any = null
 class ReactiveEffect {
     private _fn: any
     deps: any = []
+    onStop?: () => void
     // 防止重复触发stop
     active = true
     constructor(fn, public scheduler?) {
@@ -24,6 +27,7 @@ class ReactiveEffect {
                     dep.delete(this)
                 }
             })
+            if (this.onStop) this.onStop()
         }
     }
 }
@@ -36,6 +40,7 @@ export function stop (runner) {
 export function effect(fn, options:any = {}) {
     // 实例化
     const _effect = new ReactiveEffect(fn, options.scheduler)
+    extend(_effect, options)
     // 触发run执行当前收集函数
     _effect.run()
     // 这里使用bind指定this，不然直接return出去会使this指向window
@@ -46,25 +51,21 @@ export function effect(fn, options:any = {}) {
 
 // 依赖收集
 export function track(target, key) {
-
     let depMpa = targetMap.get(target)
     if (!depMpa) {
         depMpa = new Map()
         targetMap.set(target, depMpa)
     }
-
     let dep = depMpa.get(key)
     if (!dep) {
         dep = new Set()
         depMpa.set(key, dep)
     }
-
     if (activeEffect) {
         dep.add(activeEffect)
         // 反向收集依赖用于实现stop
         activeEffect.deps.push(dep)
     }
-
 }
 
 // 触发更新
