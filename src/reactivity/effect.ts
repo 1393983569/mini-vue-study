@@ -4,32 +4,47 @@ import { extend } from '../shared'
 const targetMap = new WeakMap();
 // 保存当前执行的函数（dep）
 let activeEffect: any = null
+// 是否可以收集依赖
+let shouldTrack: boolean = false
 // 处理effect dep的类
 class ReactiveEffect {
     private _fn: any
     deps: any = []
     onStop?: () => void
     // 防止重复触发stop
-    active = true
+    active:boolean = true
     constructor(fn, public scheduler?) {
         // 初始化赋值当前执行函数
         this._fn = fn
     }
     // 触发函数执行
     run() {
+        // 当前如果是stop的状态
+        if (!this.active) {
+            return this._fn()
+        }
+        // 如果不是stop的状态 就置为可以收集依赖的状态
+        shouldTrack = true
         activeEffect = this
-        return this._fn()
+        const result = this._fn()
+        // 收集完依赖后再重置回不可收集的状态
+        shouldTrack = false
+        return result
     }
     stop() {
         if (this.active) {
-            this.deps.forEach(dep => {
-                if (dep.has(this)) {
-                    dep.delete(this)
-                }
-            })
+            cleanupEffect(this)
             if (this.onStop) this.onStop()
+            this.active = false
         }
     }
+}
+
+function cleanupEffect (effect) {
+    effect.deps.forEach(dep => {
+        dep.delete(effect)
+    })
+    effect.deps.length = 0
 }
 
 export function stop (runner) {
@@ -51,6 +66,7 @@ export function effect(fn, options:any = {}) {
 
 // 依赖收集
 export function track(target, key) {
+    if (!isTracking()) return
     let depMpa = targetMap.get(target)
     if (!depMpa) {
         depMpa = new Map()
@@ -61,11 +77,17 @@ export function track(target, key) {
         dep = new Set()
         depMpa.set(key, dep)
     }
-    if (activeEffect) {
-        dep.add(activeEffect)
-        // 反向收集依赖用于实现stop
-        activeEffect.deps.push(dep)
-    }
+    
+    // 如果已经收集就不继续收集
+    if (dep.has(activeEffect)) return
+    dep.add(activeEffect)
+    // 反向收集依赖用于实现stop
+    activeEffect.deps.push(dep)
+}
+
+// 判断当前是否可以Track
+function isTracking () {
+    return activeEffect && shouldTrack
 }
 
 // 触发更新

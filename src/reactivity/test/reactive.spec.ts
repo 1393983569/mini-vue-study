@@ -1,16 +1,16 @@
 import { reactive, readonly, isReactive, isReadonly } from "../reactive";
 
 describe('reactive', () => {
-    it('happy path', () => {
-        const obj = {
-            a: 10
-        }
-        const proxyObj: any = reactive(obj)
-        expect(proxyObj).not.toBe(obj)
-        proxyObj.a++
-        expect(proxyObj.a).toBe(11)
-        expect(obj.a).toBe(11)
-    })
+    // it('happy path', () => {
+    //     const obj = {
+    //         a: 10
+    //     }
+    //     const proxyObj: any = reactive(obj)
+    //     expect(proxyObj).not.toBe(obj)
+    //     proxyObj.a++
+    //     expect(proxyObj.a).toBe(11)
+    //     expect(obj.a).toBe(11)
+    // })
     it('happy path', () => {
         // not set
         const original = { foo: 1, bar: 2 }

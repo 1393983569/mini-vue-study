@@ -68,7 +68,8 @@ describe("effect", () => {
         // 调用stop后
         stop(runner);
         // obj.prop发生变化，dummy不会发生变化了
-        obj.prop = 3;
+        // obj.prop = 3;
+        obj.prop++
         expect(dummy).toBe(2);
         runner();
         expect(dummy).toBe(3);

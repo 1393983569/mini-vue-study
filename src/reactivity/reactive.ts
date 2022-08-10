@@ -26,7 +26,6 @@ export function isReactive(value) {
 
 // 判断是否是Readonly
 export function isReadonly(value) {
-    console.log(value, value[ReactiveFlags.IS_READONLY])
     return !!value[ReactiveFlags.IS_READONLY]
 }
 
