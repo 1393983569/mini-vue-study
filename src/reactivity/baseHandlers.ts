@@ -1,5 +1,8 @@
 import { track, trigger } from "./effect";
+import { isObject } from '../shared'
 import {
+    reactive, 
+    readonly,
     ReactiveFlags
 } from './reactive'
 
@@ -16,6 +19,11 @@ function createGetter (isReadonly = false) {
             return isReadonly
         }
         const res = Reflect.get(target, key, receiver)
+        // 判断是否嵌套
+        if (isObject(res)) {
+            return isReadonly ? readonly(res) : reactive(res)
+        }
+
         // isReadonly 判断是否只读
         if (!isReadonly) {
             track(target, key)

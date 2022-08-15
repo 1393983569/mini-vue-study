@@ -21,6 +21,7 @@ export function readonly(raw) {
 
 // 判断是否是Reactive
 export function isReactive(value) {
+    console.log(value[ReactiveFlags.IS_REACTIVE])
     return !!value[ReactiveFlags.IS_REACTIVE]
 }
 
