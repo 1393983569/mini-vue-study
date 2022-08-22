@@ -1,5 +1,5 @@
 import { track, trigger } from "./effect";
-import { isObject } from '../shared'
+import { isObject, extend } from '../shared'
 import {
     reactive, 
     readonly,
@@ -8,9 +8,10 @@ import {
 
 const get = createGetter()
 const readonlyGet = createGetter(true)
+const shallowReadonlyGet = createGetter(true, true)
 const set = createSetter()
 
-function createGetter (isReadonly = false) {
+function createGetter (isReadonly = false, shallow = false) {
     return (target, key, receiver) =>  {
         // 用于判断是否是Readonly
         if (key === ReactiveFlags.IS_REACTIVE) {
@@ -19,6 +20,9 @@ function createGetter (isReadonly = false) {
             return isReadonly
         }
         const res = Reflect.get(target, key, receiver)
+        if (shallow) {
+            return res
+        }
         // 判断是否嵌套
         if (isObject(res)) {
             return isReadonly ? readonly(res) : reactive(res)
@@ -58,4 +62,8 @@ export const readonlyHandlers = {
         return true
     }
 }
+
+export const shallowReadonlyHandlers = extend(readonlyHandlers, {
+    get: shallowReadonlyGet
+})
 
