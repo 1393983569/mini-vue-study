@@ -33,3 +33,8 @@ export function isReadonly(value) {
     return !!value[ReactiveFlags.IS_READONLY]
 }
 
+// 判断是否是Proxy
+export function isProxy(value) {
+    return isReactive(value) || isReadonly(value)
+}
+
