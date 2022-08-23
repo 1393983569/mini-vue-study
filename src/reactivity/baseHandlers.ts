@@ -9,6 +9,7 @@ import {
 const get = createGetter()
 const readonlyGet = createGetter(true)
 const shallowReadonlyGet = createGetter(true, true)
+const shallowReactiveGet = createGetter(false, true)
 const set = createSetter()
 
 function createGetter (isReadonly = false, shallow = false) {
@@ -65,5 +66,9 @@ export const readonlyHandlers = {
 
 export const shallowReadonlyHandlers = extend(readonlyHandlers, {
     get: shallowReadonlyGet
+})
+
+export const shallowReactiveHandlers = extend(readonlyHandlers, {
+    get: shallowReactiveGet
 })
 

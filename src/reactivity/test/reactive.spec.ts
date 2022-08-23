@@ -1,4 +1,4 @@
-import { reactive, readonly, isReactive, isReadonly, shallowReadonly, isProxy } from "../reactive";
+import { reactive, readonly, isReactive, isReadonly, shallowReadonly, isProxy, shallowReactive } from "../reactive";
 
 describe('reactive', () => {
     // it('happy path', () => {
@@ -61,10 +61,15 @@ describe('reactive', () => {
     it('happy path', () => {
         const original = { bar: { foo: 1 } }
         const notProxy = { bar: { foo: 1 } }
-        // shallow 的意思是浅的，默认 readonly 是嵌套的，而 shallowReadonly 刚好相反
         const observed = reactive(original)
         expect(isProxy(observed)).toBe(true)
         expect(isProxy(notProxy)).toBe(false)
+    })
+    it('happy path', () => {
+        const original = { foo: { bar: 1 } }
+        const observed = shallowReactive(original)
+        expect(isReactive(observed)).toBe(true)
+        expect(isReactive(observed.foo)).toBe(false)
     })
 })
 

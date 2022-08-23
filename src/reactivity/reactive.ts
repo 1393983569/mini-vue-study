@@ -1,5 +1,5 @@
 // 还可以直接将 createSetter 和 createGetter 分层出去到baseHandlers.ts
-import { mutableHandlers, readonlyHandlers, shallowReadonlyHandlers } from './baseHandlers'
+import { mutableHandlers, readonlyHandlers, shallowReadonlyHandlers, shallowReactiveHandlers } from './baseHandlers'
 
 export const enum ReactiveFlags {
     IS_REACTIVE = '__v_isReactive',
@@ -21,6 +21,10 @@ export function readonly(raw) {
 
 export function shallowReadonly(raw) {
     return createActiveObject(raw, shallowReadonlyHandlers)
+}
+
+export function shallowReactive(raw) {
+    return createActiveObject(raw, shallowReactiveHandlers)
 }
 
 // 判断是否是Reactive
