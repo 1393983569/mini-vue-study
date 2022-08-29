@@ -77,7 +77,10 @@ export function track(target, key) {
         dep = new Set()
         depMpa.set(key, dep)
     }
-    
+    trackEffects(dep)
+}
+
+export function trackEffects(dep) {
     // 如果已经收集就不继续收集
     if (dep.has(activeEffect)) return
     dep.add(activeEffect)
@@ -97,7 +100,11 @@ export function trigger(target, key) {
     // 按照key取出dep
     const deps = depsMap.get(key)
     if (!deps) return 
-    // 循环执行
+    triggerEffects(deps)
+}
+ 
+export function triggerEffects (deps) {
+    // 循环执行依赖
     for (let effect of deps) {
         if (effect.scheduler) {
             effect.scheduler()
@@ -106,5 +113,3 @@ export function trigger(target, key) {
         }
     }
 }
-
-
