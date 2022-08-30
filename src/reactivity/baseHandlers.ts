@@ -14,12 +14,19 @@ const set = createSetter()
 
 function createGetter (isReadonly = false, shallow = false) {
     return (target, key, receiver) =>  {
-        // 用于判断是否是Readonly
+        // 用于判断是否是reactive
         if (key === ReactiveFlags.IS_REACTIVE) {
             return !isReadonly
+        // 用于判断是否是readonly
         } else if (key === ReactiveFlags.IS_READONLY) {
             return isReadonly
         }
+        /**
+         * Reflect.get()方法用于允许用户从对象获取函数的属性
+         * target:它是获取属性的目标对象。
+         * propertyKey: 就是要获取的key的名字。
+         * receiver: 如果遇到 getter，它是为对象调用提供的 this 值。
+         */
         const res = Reflect.get(target, key, receiver)
         if (shallow) {
             return res
@@ -46,6 +53,7 @@ function createSetter () {
     }
 }
 
+// 单独抽离出get 和 set 方法
 export const mutableHandlers = {
     get,
     set

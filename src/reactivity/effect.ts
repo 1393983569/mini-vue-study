@@ -89,7 +89,7 @@ export function trackEffects(dep) {
 }
 
 // 判断当前是否可以Track
-function isTracking () {
+export function isTracking () {
     return activeEffect && shouldTrack
 }
 
