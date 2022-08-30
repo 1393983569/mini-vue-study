@@ -73,11 +73,11 @@ export const readonlyHandlers = {
     }
 }
 
-export const shallowReadonlyHandlers = extend(readonlyHandlers, {
+export const shallowReadonlyHandlers = extend({}, readonlyHandlers, {
     get: shallowReadonlyGet
 })
 
-export const shallowReactiveHandlers = extend(readonlyHandlers, {
+export const shallowReactiveHandlers = extend({}, readonlyHandlers, {
     get: shallowReactiveGet
 })
 
