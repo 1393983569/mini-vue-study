@@ -13,6 +13,7 @@ const shallowReactiveGet = createGetter(false, true)
 const set = createSetter()
 
 function createGetter (isReadonly = false, shallow = false) {
+    // receiver 当前proxy
     return (target, key, receiver) =>  {
         // 用于判断是否是reactive
         if (key === ReactiveFlags.IS_REACTIVE) {
