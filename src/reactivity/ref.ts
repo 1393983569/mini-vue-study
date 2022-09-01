@@ -6,10 +6,13 @@ import { reactive } from './reactive'
 class RefImpl {
     private _value
     public dep
+    private __is_ref
     constructor(value) {
         // 处理值为对象的逻辑
         this._value = convert(value)
         this.dep = new Set()
+        // 添加ref标识
+        this.__is_ref = true
     }
 
     get value() {
@@ -38,5 +41,13 @@ function trackRefValue(ref) {
 
 export function ref(value) {
     return new RefImpl(value)
+}
+
+export function isRef(ref) {
+    return !!ref.__is_ref
+}
+
+export function unRef(ref) {
+    return isRef(ref) ? ref.value : ref
 }
 

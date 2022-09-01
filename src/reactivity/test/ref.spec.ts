@@ -1,5 +1,5 @@
-import { ref } from '../ref'
-import { isReactive } from "../reactive";
+import { ref, isRef, unRef } from '../ref'
+import { isReactive, reactive } from "../reactive";
 import { effect } from "../effect";
 
 describe('ref', () => {
@@ -47,5 +47,21 @@ describe('ref', () => {
         a.value.foo = 2
         expect(dummy).toBe(2)
         expect(isReactive(a.value)).toBe(true)
+    })
+    it('isRef', () => {
+        const a = ref({
+            foo: 1,
+        })
+        const b = reactive({
+            foo: 1,
+        })
+        expect(isRef(a)).toBe(true)
+        expect(isRef(1)).toBe(false)
+        expect(isRef(b)).toBe(false)
+    })
+    it('unRef', () => {
+        const a = ref(2)
+        expect(unRef(a)).toBe(2)
+        expect(unRef(1)).toBe(1)
     })
 })
