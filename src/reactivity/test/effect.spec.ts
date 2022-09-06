@@ -94,7 +94,7 @@ describe("effect", () => {
         expect(onStop).toBeCalledTimes(1)
     })
     
-    // 如果有不需要触发更新的值发生改变，就不执行effect
+    // 不需要触发更新的值发生改变，就不执行effect
     it('cleanup', () => {
       const obj = reactive({
           foo: 1,
@@ -109,6 +109,7 @@ describe("effect", () => {
           dummy = obj.ok ? obj.text : 'not'
         }
       )
+      // obj.ok设置为false后 无论obj.text如何改变都不会触发effect执行
       obj.ok = false
       obj.text = 5
       obj.text = 8
