@@ -24,7 +24,8 @@ class RefImpl {
         // 判断更新的值是否和现在的值相等，如果相等就不去更新值
         if (hasChanged(newVal, this._value)) return
         this._value = convert(newVal)
-        triggerEffects(this.dep)
+        const newDeps = new Set(this.dep)
+        triggerEffects(newDeps)
     }
 }
 

@@ -93,5 +93,28 @@ describe("effect", () => {
         stop(runner)
         expect(onStop).toBeCalledTimes(1)
     })
+    
+    // 如果有不需要触发更新的值发生改变，就不执行effect
+    it('cleanup', () => {
+      const obj = reactive({
+          foo: 1,
+          text: 2,
+          ok: true,
+      })
+      let dummy = ''
+      let num = 0
+      effect(
+        () => {
+          num++
+          dummy = obj.ok ? obj.text : 'not'
+        }
+      )
+      obj.ok = false
+      obj.text = 5
+      obj.text = 8
+      obj.text = 3
+      obj.text = 9
+      expect(num).toBe(2);
+  })
 });
 

@@ -19,6 +19,7 @@ class ReactiveEffect {
     }
     // 触发函数执行
     run() {
+        cleanupEffect(this)
         // 当前如果是stop的状态
         if (!this.active) {
             return this._fn()
@@ -100,7 +101,8 @@ export function trigger(target, key) {
     // 按照key取出dep
     const deps = depsMap.get(key)
     if (!deps) return 
-    triggerEffects(deps)
+    const newDeps = new Set(deps)
+    triggerEffects(newDeps)
 }
  
 export function triggerEffects (deps) {
