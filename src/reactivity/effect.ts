@@ -7,8 +7,8 @@ let activeEffect: any = null
 let effectStack: any = []
 // 是否可以收集依赖
 let shouldTrack: boolean = false
-// 处理effect dep的类
-class ReactiveEffect { 
+// 处理effect dep的类 
+export class ReactiveEffect { 
     private _fn: any
     deps: any = []
     onStop?: () => void
