@@ -52,3 +52,20 @@ export function unRef(ref) {
     return isRef(ref) ? ref.value : ref
 }
 
+export function proxyRefs(obj) {
+    return new Proxy(obj, {
+        get (target, key) {
+            return unRef(Reflect.get(target, key))
+        },
+        set (target, key, value) {
+            // 如果当前要改变的值是一个ref并且传入的值不是一个ref
+            if (isRef(target[key]) && !isRef(value)) {
+                return target[key].value = value
+            // 如果传入的值是一个ref就直接替换当前值
+            } else {
+                return Reflect.set(target, key, value)
+            }
+        }
+    })
+}
+

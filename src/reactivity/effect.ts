@@ -4,10 +4,11 @@ import { extend } from '../shared'
 const targetMap = new WeakMap();
 // 保存当前执行的函数（dep）
 let activeEffect: any = null
+let effectStack: any = []
 // 是否可以收集依赖
 let shouldTrack: boolean = false
-// 处理effect dep的类
-class ReactiveEffect {
+// 处理effect dep的类 
+export class ReactiveEffect { 
     private _fn: any
     deps: any = []
     onStop?: () => void
@@ -19,6 +20,10 @@ class ReactiveEffect {
     }
     // 触发函数执行
     run() {
+        /**
+         * 清空遗留副作用函数 使其重新收集
+         * 请看测试用例cleanup
+         */
         cleanupEffect(this)
         // 当前如果是stop的状态
         if (!this.active) {
@@ -26,10 +31,19 @@ class ReactiveEffect {
         }
         // 如果不是stop的状态 就置为可以收集依赖的状态
         shouldTrack = true
+        // 当调用effect注册副作用函数时，将副作用函数赋值给activeEffect
         activeEffect = this
+        /**
+         * 执行副作用函数执行前将当前函数压入栈中 
+         * 之所以使用栈是应为effect会嵌套执行，但是activeEffect只能保存一个只，这时activeEffect就会被覆盖并且无法恢复到正常值
+         */
+        effectStack.push(this)
         const result = this._fn()
-        // 收集完依赖后再重置回不可收集的状态
-        shouldTrack = false
+        // 执行完之后把当前执行函数弹出，并且把activeEffect还原为之前的值
+        effectStack.pop()
+        activeEffect = effectStack[effectStack.length - 1]
+        // 如果栈清空表示收集完依赖，重置回不可收集的状态
+        shouldTrack = effectStack.length !== 0
         return result
     }
     stop() {

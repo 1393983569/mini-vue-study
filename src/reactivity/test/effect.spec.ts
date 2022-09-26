@@ -94,7 +94,7 @@ describe("effect", () => {
         expect(onStop).toBeCalledTimes(1)
     })
     
-    // 不需要触发更新的值发生改变，就不执行effect
+    // cleanup
     it('cleanup', () => {
       const obj = reactive({
           foo: 1,
@@ -118,24 +118,24 @@ describe("effect", () => {
       expect(num).toBe(2);
   })
   
-  // // effect嵌套 待实现
-  // it("happy path", () => {
-  //     const obj = reactive({
-  //         age1: 18,
-  //         age2: 20,
-  //     });
-  //     let temp1, temp2;
+  // effect嵌套
+  it("happy path", () => {
+      const obj = reactive({
+          age1: 18,
+          age2: 20,
+      });
+      let temp1, temp2;
 
-  //     effect(() => {
-  //       console.log('temp1')
-  //       effect(() => {
-  //         console.log('temp2')
-  //         temp1 = obj.age2;
-  //       });
-  //       temp2 = obj.age1;
-  //     });
-  //     // obj.age2 = 22
-  //     obj.age1 = 25
-  // });
+      effect(() => {
+        console.log('temp1')
+        effect(() => {
+          console.log('temp2')
+          temp1 = obj.age2;
+        });
+        temp2 = obj.age1;
+      });
+      // obj.age2 = 22
+      obj.age1 = 25
+  });
 });
 
