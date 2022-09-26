@@ -23,6 +23,7 @@ function createGetter (isReadonly = false, shallow = false) {
             return isReadonly
         }
         /**
+         * 使用Reflect主要是为了避免代理陷阱 触发代理对象的劫持时保证正确的 this 上下文指向
          * Reflect.get()方法用于允许用户从对象获取函数的属性
          * target:它是获取属性的目标对象。
          * propertyKey: 就是要获取的key的名字。
