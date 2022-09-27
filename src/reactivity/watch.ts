@@ -18,3 +18,13 @@ export function watch(getter, fn) {
     return new WatchRefImpl(getter, fn)
 }
 
+function traverse(value, seen = new Set()) {
+    if (typeof value !== 'object' || value === null || seen.has(value)) return
+    seen.add(value)
+    for (const key in value) {
+        console.log(value[key])
+        traverse(value[key], seen)
+    }
+    return value
+}
+
