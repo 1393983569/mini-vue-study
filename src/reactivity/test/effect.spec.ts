@@ -109,6 +109,7 @@ describe("effect", () => {
           dummy = obj.ok ? obj.text : 'not'
         }
       )
+      obj.text
       // obj.ok设置为false后 无论obj.text如何改变都不会触发effect执行
       obj.ok = false
       obj.text = 5
