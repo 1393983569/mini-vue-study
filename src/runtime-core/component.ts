@@ -40,6 +40,9 @@ function handleSetupResult(instance, setupResult) {
 // 这个就是 api 的设计
 // 当返回一个 function 的时候 就把它当成一个 render 来处理了
 // 一般是写 jsx 的时候用   不然的话 又得写一个 render  又得在 setup 中返回 对象 就特别麻烦了  
+// setup() {
+//     return () => <div>我是div</div>;
+//   }
 // 直接返回写起来就舒服了
     // TODO function
     if (typeof setupResult === 'object') {
