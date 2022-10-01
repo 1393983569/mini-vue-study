@@ -5,6 +5,11 @@ export function render(vnode, container) {
     patch(vnode, container)
 }
 
+/**
+ * 
+ * @param vnode 组件实例
+ * @param container 根节点
+ */
 function patch(vnode, container) {
     // 去处理组件，在脑图中我们可以第一步是先判断 vnode 的类型  
     // 这里先只处理 component 类型
