@@ -29,7 +29,10 @@ export class ReactiveEffect {
         if (!this.active) {
             return this._fn()
         }
-        // 如果不是stop的状态 就置为可以收集依赖的状态
+        /**
+         *  如果不是stop的状态 就置为可以收集依赖的状态 
+         *  shouldTrack是为了在执行obj.age++会重复收集依赖这时在副作用函数执行完成后置为不可收集的状态（false）就会解决这个问题
+         */
         shouldTrack = true
         // 当调用effect注册副作用函数时，将副作用函数赋值给activeEffect
         activeEffect = this

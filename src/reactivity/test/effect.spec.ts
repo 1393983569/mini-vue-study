@@ -65,9 +65,9 @@ describe("effect", () => {
         obj.prop = 2;
         // dummy也会对应发生变化
         expect(dummy).toBe(2);
-        // 调用stop后
+        // 调用stop
         stop(runner);
-        // obj.prop发生变化，dummy不会发生变化了
+        // 调用stop后obj.prop发生变化为3，但是因为stop会清空依赖dummy的赋值不会执行所以dummy不会发生变化
         // obj.prop = 3;
         obj.prop++
         expect(dummy).toBe(2);
