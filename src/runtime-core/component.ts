@@ -3,7 +3,7 @@ export function createComponentInstance(vnode) {
     const component = {
         vnode,
         // 方便获取type
-        type: vnode
+        type: vnode.type
     }
     return component
 }
@@ -60,8 +60,9 @@ function finishComponentSetup(instance) {
   // 如果 instance.render 没有的话，我们就让 component.render 赋给 instance.render
   // 而没有 component.render 咋办捏，其实可以通过编译器来自动生成一个 render 函数
   // 这里先不写
-  if (!instance.render) {
-    instance.render = component.render
-  }
+  // if (instance.render) {
+  //   instance.render = component.render
+  // }
+  instance.render = component.render
 }
 
