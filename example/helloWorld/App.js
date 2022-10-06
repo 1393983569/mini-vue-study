@@ -1,8 +1,16 @@
-import { h } from '../../lib/mini-vue.esm.js'
+import { h } from '../../lib/guide-mini-vue.esm.js'
 
 export default {
     render() {
-        return h('div', 'hi ' + this.msg)
+        return h(
+            'div', 
+            {
+            id: 'root',
+            class: ['red', 'hard'],
+            },
+            // 'hi mini-vue'
+            [h('p', {class: 'blue'}, 'hello'), h('a', {class: 'blue'}, '去美甲')]
+        )
     },
     setup() {
         return {

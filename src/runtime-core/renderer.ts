@@ -11,10 +11,43 @@ export function render(vnode, container) {
  * @param container 根节点
  */
 function patch(vnode, container) {
-    // 去处理组件，在脑图中我们可以第一步是先判断 vnode 的类型  
-    // 这里先只处理 component 类型
-    processComponent(vnode, container);
+    // 去处理组件，在脑图中我们可以第一步是先判断 vnode 的类型
+    // 区分element和component类型 element会返回一个string，component会返回一个对象
+    if (typeof vnode.type === 'string') {
+        processElement(vnode, container)
+    } else {
+        processComponent(vnode, container);
+    }
 }
+
+function processElement(vnode: any, container: any) {
+    // 这里分为初始化（mount）和更新（update）
+    mountElement(vnode, container)
+}
+
+function mountElement(vnode: any, container: any) {
+    const el = document.createElement(vnode.type)
+    
+    const { children } = vnode
+    if (typeof children === 'string') {
+        el.textContent = vnode.children
+    } else if(Array.isArray(children)) {
+        mountChildren(vnode, el)
+    }
+    const { props } = vnode
+    for (let key in props)  {
+        const val = props[key]
+        el.setAttribute(key, val)
+    }
+    container.append(el)
+}
+
+function mountChildren(vnode, container) {
+    vnode.children.forEach(item => {
+        patch(item, container)
+    })
+}
+
 
 function processComponent(vnode, container) {
     return mountComponent(vnode, container)
