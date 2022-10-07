@@ -1,9 +1,12 @@
+import { PubliceInstancePorxyHandlers } from "./componentPubliceInstance"
+
 export function createComponentInstance(vnode) {
     // 这里返回一个 component 结构的数据
     const component = {
         vnode,
         // 方便获取type
-        type: vnode.type
+        type: vnode.type,
+        setupState: {}
     }
     return component
 }
@@ -19,12 +22,14 @@ export function setupComponent(instance, container) {
 }
 
 export function setupStatefulComponent(instance, container) {
-    // 这个函数的处理流程其实非常简单，只需要调用 setup() 获取到返回值就可以了
+  // 这个函数的处理流程其实非常简单，只需要调用 setup() 获取到返回值就可以了
   // 那么第一步我们就是要获取用户自定义的 setup
   // 通过对初始化的逻辑进行梳理后我们发现，在 createVNode() 函数中将 rootComponent 挂载到了 vNode.type
   // 而 vNode 又通过 instance 挂载到的 instance.vnode 中
   // 所以就可以通过这里传入的 instance.vnode.type 获取到用户定义的 rootComponent
   const component = instance.type
+  // 设置代理让组件内部能访问到setup的内容
+  instance.proxy = new Proxy({_: instance}, PubliceInstancePorxyHandlers)
   // 拿到 component 我们就可以拿到 setup 函数
   const { setup } = component
   // 这里需要判断一下，因为用户是不一定会写 setup 的，所以我们要给其一个默认值

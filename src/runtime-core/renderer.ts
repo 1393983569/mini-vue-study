@@ -25,10 +25,12 @@ function processElement(vnode: any, container: any) {
     mountElement(vnode, container)
 }
 
+// 处理element类型
 function mountElement(vnode: any, container: any) {
-    const el = document.createElement(vnode.type)
-    
+    // vonde => element => div
+    const el = (vnode.el = document.createElement(vnode.type))
     const { children } = vnode
+    // 判断当前children是否是一个数组  例:[h('p', {class: 'blue'}, 'hello'), h('a', {class: 'blue'}, '去美甲')]
     if (typeof children === 'string') {
         el.textContent = vnode.children
     } else if(Array.isArray(children)) {
@@ -58,21 +60,31 @@ function processComponent(vnode, container) {
  * @param vnode 组件实例
  * @param container 根节点
  */
-function mountComponent(vnode, container) {
+function mountComponent(initialVNode, container) {
     // 通过 vnode 获取组件实例
-    const instance = createComponentInstance(vnode)
+    const instance = createComponentInstance(initialVNode)
     // setup component
     // 初始化props 初始化slots 调用setupStatefulComponent处理 setup 的返回值
     setupComponent(instance, container)
     // setupRenderEffect
-    setupRenderEffect(instance, container)
+    setupRenderEffect(instance, initialVNode, container)
 }
 
-function setupRenderEffect(instance, container) {
-    // 调用 render 和 patch 挂载 component
-    const subTree = instance.render()
+/**
+ * 
+ * @param instance 组件实例
+ * @param vnode component的虚拟节点
+ * @param container 
+ */
+function setupRenderEffect(instance, initialVNode, container) {
+    // setup的代理 用于获取setup里的值,比如组件里的<div>{{this.msg}}</div>
+    const { proxy } = instance
+    // 调用 render 和 patch 挂载到 component
+    const subTree = instance.render.call(proxy)
     // 下面就是 mountElement 了
     patch(subTree, container)
+    // 待mountElement处理完成后就可以获取到div的实例也就是根节点
+    initialVNode.el = subTree.el
   }
 
 
