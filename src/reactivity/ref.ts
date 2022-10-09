@@ -1,5 +1,5 @@
 
-import { isObject, hasChanged } from '../shared'
+import { isObject, hasChanged } from '../shared/index'
 import { trackEffects, triggerEffects, isTracking } from './effect'
 import { reactive } from './reactive'
 
@@ -8,7 +8,7 @@ class RefImpl {
     public dep
     private __is_ref
     constructor(value) {
-        // 处理值为对象的逻辑
+        // 保存当前值用来判断两次赋值是否相等
         this._value = convert(value)
         this.dep = new Set()
         // 添加ref标识
@@ -23,6 +23,7 @@ class RefImpl {
     set value(newVal) {
         // 判断更新的值是否和现在的值相等，如果相等就不去更新值
         if (hasChanged(newVal, this._value)) return
+        // 保存变更后的值
         this._value = convert(newVal)
         const newDeps = new Set(this.dep)
         triggerEffects(newDeps)

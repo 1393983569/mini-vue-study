@@ -23,19 +23,19 @@ describe('ref', () => {
     //     expect(dummy).toBe(2)
     // })
     // 相同的值不会触发依赖
-    // it('ref should be reactive', () => {
-    //     const r = ref(1)
-    //     let dummy
-    //     let calls = 0
-    //     effect(() => {
-    //         calls++
-    //         dummy = r.value
-    //     })
-    //     r.value = 2
-    //     r.value = 2
-    //     expect(calls).toBe(2)
-    //     expect(dummy).toBe(2)
-    // })
+    it('ref should be reactive', () => {
+        const r = ref(1)
+        let dummy
+        let calls = 0
+        effect(() => {
+            calls++
+            dummy = r.value
+        })
+        r.value = 2
+        r.value = 2
+        expect(calls).toBe(2)
+        expect(dummy).toBe(2)
+    })
     // // // 传入的是一个object
     // it('should make nested properties reactive', () => {
     //     const a = ref({
@@ -65,20 +65,20 @@ describe('ref', () => {
     //     expect(unRef(a)).toBe(2)
     //     expect(unRef(1)).toBe(1)
     // })
-    it('proxyRefs', () => {
-        const user = {
-            age: ref(10),
-            name: 'xiaohong'
-        }
-        const proxyUser = proxyRefs(user)
-        // get
-        expect(user.age.value).toBe(10)
-        expect(proxyUser.name).toBe('xiaohong')
-        expect(proxyUser.age).toBe(10)
-        // set
-        proxyUser.age = ref(20)
-        expect(proxyUser.age).toBe(20)
-        proxyUser.age = 10
-        expect(proxyUser.age).toBe(10)
-    })
+    // it('proxyRefs', () => {
+    //     const user = {
+    //         age: ref(10),
+    //         name: 'xiaohong'
+    //     }
+    //     const proxyUser = proxyRefs(user)
+    //     // get
+    //     expect(user.age.value).toBe(10)
+    //     expect(proxyUser.name).toBe('xiaohong')
+    //     expect(proxyUser.age).toBe(10)
+    //     // set
+    //     proxyUser.age = ref(20)
+    //     expect(proxyUser.age).toBe(20)
+    //     proxyUser.age = 10
+    //     expect(proxyUser.age).toBe(10)
+    // })
 })

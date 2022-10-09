@@ -1,4 +1,4 @@
-import { extend } from '../shared' 
+import { extend } from '../shared/index' 
 
 // 存储依赖的weakMap
 const targetMap = new WeakMap();
