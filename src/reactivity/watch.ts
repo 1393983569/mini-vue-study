@@ -18,6 +18,7 @@ export function watch(getter, fn) {
     return new WatchRefImpl(getter, fn)
 }
 
+// 递归访问属性 来收集依赖 给每一个属性都挂上activeEffect
 function traverse(value, seen = new Set()) {
     if (typeof value !== 'object' || value === null || seen.has(value)) return
     seen.add(value)

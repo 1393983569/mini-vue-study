@@ -17,7 +17,6 @@ export function setupComponent(instance, container) {
     // TODO initSlots()
     // 处理 setup 的返回值
     // 这个函数的意思是初始化一个有状态的 setup，这是因为在 vue3 中还有函数式组件
-    // 函数式组件没有状态
     setupStatefulComponent(instance, container)
 }
 
@@ -48,7 +47,6 @@ function handleSetupResult(instance, setupResult) {
 // setup() {
 //     return () => <div>我是div</div>;
 //   }
-// 直接返回写起来就舒服了
     // TODO function
     if (typeof setupResult === 'object') {
         // 如果是 object ，就挂载到实例上
