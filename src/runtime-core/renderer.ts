@@ -1,4 +1,5 @@
 import { createComponentInstance, setupComponent } from './component'
+import { ShapeFlags } from '../shared/shapeFlags'
 
 export function render(vnode, container) {
     // 这里的 render 调用 patch 方法，方便对于子节点进行递归处理
@@ -13,7 +14,7 @@ export function render(vnode, container) {
 function patch(vnode, container) {
     // 去处理组件，在脑图中我们可以第一步是先判断 vnode 的类型
     // 区分element和component类型 element会返回一个string，component会返回一个对象
-    if (typeof vnode.type === 'string') {
+    if (ShapeFlags.ELEMENT & vnode.shapeFlags) {
         processElement(vnode, container)
     } else {
         processComponent(vnode, container);
@@ -29,11 +30,12 @@ function processElement(vnode: any, container: any) {
 function mountElement(vnode: any, container: any) {
     // vonde => element => div
     const el = (vnode.el = document.createElement(vnode.type))
-    const { children } = vnode
-    // 判断当前children是否是一个数组  例:[h('p', {class: 'blue'}, 'hello'), h('a', {class: 'blue'}, '去美甲')]
-    if (typeof children === 'string') {
+    const { shapeFlags } = vnode
+    // 判断当前children是否是一个字符串
+    if (ShapeFlags.TEXT_CHILDREN & shapeFlags) {
         el.textContent = vnode.children
-    } else if(Array.isArray(children)) {
+    // 判断当前children是否是一个数组  例:[h('p', {class: 'blue'}, 'hello'), h('a', {class: 'blue'}, '去美甲')]
+    } else if(ShapeFlags.ARRAY_CHILDREN & shapeFlags) {
         mountChildren(vnode, el)
     }
     const { props } = vnode

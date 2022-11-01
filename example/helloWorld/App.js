@@ -9,8 +9,8 @@ export default {
             id: 'root',
             class: ['red', 'hard'],
             },
-            'hi,' + this.msg
-            // [h('p', {class: 'blue'}, 'hello'), h('a', {class: 'blue'}, '去美甲')]
+            // 'hi,' + this.msg
+            [h('p', {class: 'blue'}, 'hello'), h('a', {class: 'blue'}, '去美甲')]
         )
     },
     setup() {

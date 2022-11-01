@@ -1,4 +1,4 @@
-import pkg from "./package.json";
+import pkg from "./package.json" assert { type: 'json' };
 import typescript from "@rollup/plugin-typescript";
 export default {
   input: "./src/index.ts",
@@ -15,4 +15,4 @@ export default {
     },
   ],
   plugins: [typescript()],
-};
+}; 
