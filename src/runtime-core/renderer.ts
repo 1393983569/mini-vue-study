@@ -39,6 +39,7 @@ function mountElement(vnode: any, container: any) {
         mountChildren(vnode, el)
     }
     const { props } = vnode
+    // 处理props属性
     for (let key in props)  {
         const val = props[key]
         el.setAttribute(key, val)
@@ -67,7 +68,7 @@ function mountComponent(initialVNode, container) {
     const instance = createComponentInstance(initialVNode)
     // setup component
     // 初始化props 初始化slots 调用setupStatefulComponent处理 setup 的返回值
-    setupComponent(instance, container)
+    setupComponent(instance)
     // setupRenderEffect
     setupRenderEffect(instance, initialVNode, container)
 }
@@ -88,5 +89,3 @@ function setupRenderEffect(instance, initialVNode, container) {
     // 待mountElement处理完成后就可以获取到div的实例也就是根节点
     initialVNode.el = subTree.el
   }
-
-

@@ -11,16 +11,16 @@ export function createComponentInstance(vnode) {
     return component
 }
 
-export function setupComponent(instance, container) {
+export function setupComponent(instance) {
     // 初始化分为三个阶段
     // TODO initProps()
     // TODO initSlots()
     // 处理 setup 的返回值
     // 这个函数的意思是初始化一个有状态的 setup，这是因为在 vue3 中还有函数式组件
-    setupStatefulComponent(instance, container)
+    setupStatefulComponent(instance)
 }
 
-export function setupStatefulComponent(instance, container) {
+export function setupStatefulComponent(instance) {
   // 这个函数的处理流程其实非常简单，只需要调用 setup() 获取到返回值就可以了
   // 那么第一步我们就是要获取用户自定义的 setup
   // 通过对初始化的逻辑进行梳理后我们发现，在 createVNode() 函数中将 rootComponent 挂载到了 vNode.type
