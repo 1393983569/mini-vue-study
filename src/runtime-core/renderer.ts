@@ -34,15 +34,24 @@ function mountElement(vnode: any, container: any) {
     // 判断当前children是否是一个字符串
     if (ShapeFlags.TEXT_CHILDREN & shapeFlags) {
         el.textContent = vnode.children
-    // 判断当前children是否是一个数组  例:[h('p', {class: 'blue'}, 'hello'), h('a', {class: 'blue'}, '去美甲')]
-    } else if(ShapeFlags.ARRAY_CHILDREN & shapeFlags) {
+        // 判断当前children是否是一个数组  例:[h('p', {class: 'blue'}, 'hello'), h('a', {class: 'blue'}, '去美甲')]
+    } else if (ShapeFlags.ARRAY_CHILDREN & shapeFlags) {
         mountChildren(vnode, el)
     }
     const { props } = vnode
     // 处理props属性
-    for (let key in props)  {
+    for (let key in props) {
         const val = props[key]
-        el.setAttribute(key, val)
+        // 判断是否是事件on开头
+        const siOn = key => /^on[A-Z]/.test(key)
+        if (siOn(key)) {
+            const event = key.slice(2).toLowerCase()
+            // 注册事件
+            el.addEventListener(event, val)
+        } else {
+            // 添加属性
+            el.setAttribute(key, val)
+        }
     }
     container.append(el)
 }
@@ -88,4 +97,4 @@ function setupRenderEffect(instance, initialVNode, container) {
     patch(subTree, container)
     // 待mountElement处理完成后就可以获取到div的实例也就是根节点
     initialVNode.el = subTree.el
-  }
+}

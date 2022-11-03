@@ -4,18 +4,19 @@ export default {
     render() {
         window.self = this
         return h(
-            'div', 
+            'div',
             {
-            id: 'root',
-            class: ['red', 'hard'],
+                id: 'root',
+                class: ['red', 'hard'],
+                onClick: () => console.log('1111111111')
             },
             // 'hi,' + this.msg
-            [h('p', {class: 'blue'}, 'hello'), h('a', {class: 'blue'}, '去美甲')]
+            [h('p', { class: 'blue' }, 'hello'), h('a', { class: 'blue' }, '去上班')]
         )
     },
     setup() {
         return {
-            msg: '去美甲'
+            msg: '去上班'
         }
     }
 }
