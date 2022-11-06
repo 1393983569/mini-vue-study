@@ -78,7 +78,7 @@ function mountComponent(initialVNode, container) {
     // setup component
     // 初始化props 初始化slots 调用setupStatefulComponent处理 setup 的返回值
     setupComponent(instance)
-    // setupRenderEffect
+    // 执行render
     setupRenderEffect(instance, initialVNode, container)
 }
 

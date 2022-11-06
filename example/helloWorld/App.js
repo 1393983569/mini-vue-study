@@ -1,4 +1,5 @@
 import { h } from '../../lib/guide-mini-vue.esm.js'
+import { foo } from './Foo.js'
 window.self = null
 export default {
     render() {
@@ -10,8 +11,7 @@ export default {
                 class: ['red', 'hard'],
                 onClick: () => console.log('1111111111')
             },
-            // 'hi,' + this.msg
-            [h('p', { class: 'blue' }, 'hello'), h('a', { class: 'blue' }, '去上班')]
+            [h('p', { class: 'blue' }, 'hello'), h(foo, { count: 'props' })]
         )
     },
     setup() {

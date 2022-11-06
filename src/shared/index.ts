@@ -9,4 +9,6 @@ export function hasChanged (newVal, _value) {
     return Object.is(newVal, _value)
 }
 
+export const hasOwn = (val: Object, key: any) => Object.prototype.hasOwnProperty.call(val, key)
+
 export * from './shapeFlags'
