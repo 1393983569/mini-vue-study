@@ -11,4 +11,16 @@ export function hasChanged (newVal, _value) {
 
 export const hasOwn = (val: Object, key: any) => Object.prototype.hasOwnProperty.call(val, key)
 
+// add-click =>  addClick
+export const acmelize = (str: String) => {
+    return str.replace(/-(\w)/g, (_, c) => {
+        return c ? c.toUpperCase() : ''
+    })
+}
+
+// add => onAdd
+export const toHandlerKey = (str: any) => {
+    return 'on' + str.slice(0, 1).toUpperCase() + str.slice(1)
+}
+
 export * from './shapeFlags'

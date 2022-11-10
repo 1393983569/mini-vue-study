@@ -7,11 +7,15 @@ export default {
         return h(
             'div',
             {
-                id: 'root',
-                class: ['red', 'hard'],
-                onClick: () => console.log('1111111111')
+                // id: 'root',
+                // class: ['red', 'hard'],
+                // onClick: () => console.log('1111111111')
             },
-            [h('p', { class: 'blue' }, 'hello'), h(foo, { count: 'props' })]
+            [h('p', { class: 'blue' }, 'hello'), h(foo, {
+                count: 'props',
+                onClick: (e) => console.log(e, 'onClick'),
+                onAddClick: (e) => console.log(e, 'onAddClick'),
+             })]
         )
     },
     setup() {

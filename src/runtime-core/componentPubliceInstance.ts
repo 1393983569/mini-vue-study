@@ -15,6 +15,7 @@ export const PubliceInstancePorxyHandlers = {
       if (hasOwn(setupState, key)) {
         return setupState[key]
       } else if (hasOwn(props, key)) {
+        console.log(props[key], key)
         return props[key]
       }
       // 获取$el等等
