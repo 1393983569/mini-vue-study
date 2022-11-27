@@ -15,6 +15,9 @@ export default {
                 count: 'props',
                 onClick: (e) => console.log(e, 'onClick'),
                 onAddClick: (e) => console.log(e, 'onAddClick'),
+             }, {
+                slot1: ({age}) => h('p', { class: 'blue' }, 'slot1' + age), 
+                slot2: ({age}) => h('p', { class: 'blue' }, 'slot2'+ age)
              })]
         )
     },

@@ -2,7 +2,8 @@ import { hasOwn } from "../shared/index"
 
 // 定义map结构便于扩展
 const publicPropertiesMap = {
-    $el: (i) => i.vnode.el
+    $el: (i) => i.vnode.el,
+    $slot: (i) => i.slots,
 }
 
 // 把proxy里的get提出作为优化点

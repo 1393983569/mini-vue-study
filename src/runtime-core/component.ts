@@ -2,6 +2,7 @@ import { PubliceInstancePorxyHandlers } from "./componentPubliceInstance"
 import { initProps } from './componentProps'
 import { shallowReadonly } from "../reactivity/reactive"
 import { emit } from "./componentEmit"
+import { initSlots } from "./componentSlot"
 
 export function createComponentInstance(vnode) {
     // 这里返回一个 component 结构的数据
@@ -10,7 +11,9 @@ export function createComponentInstance(vnode) {
         // 方便获取type
         type: vnode.type,
         setupState: {},
-        emit: () => {}
+        emit: () => {},
+        slots: {},
+        props: {},
     }
     component.emit = emit.bind(null, component) as any
     return component
@@ -21,7 +24,7 @@ export function setupComponent(instance) {
     // 初始化props
     initProps(instance, instance.vnode.props)
     // 初始化Slots
-    // TODO initSlots()
+    initSlots(instance, instance.vnode.children)
     // 处理 setup 的返回值
     // 这个函数的意思是初始化一个有状态的 setup，这是因为在 vue3 中还有函数式组件
     setupStatefulComponent(instance)
@@ -60,7 +63,7 @@ function handleSetupResult(instance, setupResult) {
     if (typeof setupResult === 'object') {
         // 如果是 object ，就挂载到实例上
         instance.setupState = setupResult
-    }
+    } 
     // 最后一步，调用初始化结束函数
     finishComponentSetup(instance)
 }

@@ -14,7 +14,14 @@ export function createVNode(type, props?, children?) {
     if (typeof children === 'string') {
         vnode.shapeFlags |= ShapeFlags.TEXT_CHILDREN
     } else if (Array.isArray(children)) {
-        vnode.shapeFlags |= ShapeFlags.ARRAY_CHILDREN
+        vnode.shapeFlags |= ShapeFlags.ARRAY_CHILDREN 
+    }
+    
+    // slot
+    if (ShapeFlags.STATEFUL_COMPONENT & vnode.shapeFlags) {
+        if (typeof children === 'object') {
+            vnode.shapeFlags |= ShapeFlags.SLOT_CHILDREN
+        }
     }
 
     return vnode
