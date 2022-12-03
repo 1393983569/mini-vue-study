@@ -1,4 +1,4 @@
-import { h } from '../../lib/guide-mini-vue.esm.js'
+import { h, createTextVNode } from '../../lib/guide-mini-vue.esm.js'
 import { foo } from './Foo.js'
 window.self = null
 export default {
@@ -18,7 +18,7 @@ export default {
              }, {
                 slot1: ({age}) => h('p', { class: 'blue' }, 'slot1' + age), 
                 slot2: ({age}) => h('p', { class: 'blue' }, 'slot2'+ age)
-             })]
+             }), createTextVNode('做美甲鸭')]
         )
     },
     setup() {

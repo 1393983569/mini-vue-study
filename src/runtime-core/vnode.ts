@@ -1,4 +1,6 @@
 import { ShapeFlags } from '../shared/index'
+export const Fragment = Symbol('Fragment')
+export const Text = Symbol('Text')
 
 export function createVNode(type, props?, children?) {
     // 这里先直接返回一个 VNode 结构，props、children 非必填
@@ -30,4 +32,9 @@ export function createVNode(type, props?, children?) {
 // 判断当前是否是element还是component类型
 function getShapeFlags(type) {
     return typeof type === 'string' ? ShapeFlags.ELEMENT : ShapeFlags.STATEFUL_COMPONENT
+}
+
+// 纯文本
+export function createTextVNode(text:String) {
+    return createVNode(Text, {}, text)
 }

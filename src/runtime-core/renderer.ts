@@ -1,5 +1,6 @@
 import { createComponentInstance, setupComponent } from './component'
 import { ShapeFlags } from '../shared/shapeFlags'
+import { Fragment, Text } from './vnode'
 
 export function render(vnode, container) {
     // 这里的 render 调用 patch 方法，方便对于子节点进行递归处理
@@ -12,14 +13,26 @@ export function render(vnode, container) {
  * @param container 根节点
  */
 function patch(vnode, container) {
+    const { shapeFlags, type } = vnode
+    // 处理slot 为了解决dom被div包裹的问题，所以设置一个fragment类型来单独处理
+    if (type === Fragment) {
+        processFragment(vnode, container)
+    }
+    else if (type === Text) {
+        processText(vnode, container)
+    }
     // 去处理组件，在脑图中我们可以第一步是先判断 vnode 的类型
     // 区分element和component类型 element会返回一个string，component会返回一个对象
-    if (ShapeFlags.ELEMENT & vnode.shapeFlags) {
+    else if (ShapeFlags.ELEMENT & shapeFlags) {
+        // dom
         processElement(vnode, container)
     } else {
+        // component
         processComponent(vnode, container);
     }
 }
+
+
 
 function processElement(vnode: any, container: any) {
     // 这里分为初始化（mount）和更新（update）
@@ -67,6 +80,18 @@ function processComponent(vnode, container) {
     return mountComponent(vnode, container)
 }
 
+// 处理frament slot
+function processFragment(vnode: any, container: any) {
+    mountChildren(vnode, container)
+}
+
+// 处理纯文本
+function processText(vnode: any, container: any) {
+    const { children } = vnode
+    const textVNode = (vnode.el = document.createTextNode(children))
+    container.append(textVNode)
+}
+
 /**
  * 
  * @param vnode 组件实例
@@ -93,7 +118,7 @@ function setupRenderEffect(instance, initialVNode, container) {
     const { proxy } = instance
     // 调用 render 和 patch 挂载到 component
     const subTree = instance.render.call(proxy)
-    // 下面就是 mountElement 了
+    // 下面就是 mountElement了（渲染dom）
     patch(subTree, container)
     // 待mountElement处理完成后就可以获取到div的实例也就是根节点
     initialVNode.el = subTree.el
