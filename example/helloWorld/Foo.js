@@ -1,4 +1,4 @@
-import { h, renderSlot } from '../../lib/guide-mini-vue.esm.js'
+import { h, renderSlot, getCurrentInstance } from '../../lib/guide-mini-vue.esm.js'
 /**
  * props实现
  * 1.props可以通过this访问
@@ -13,8 +13,11 @@ import { h, renderSlot } from '../../lib/guide-mini-vue.esm.js'
  * 4.作用域插槽
  */
 export const foo =  {
+    name: 'foo',
     setup(props, { emit }) {
         console.log(props)
+        const currentInstance = getCurrentInstance()
+        console.log('currentInstance:', currentInstance)
         const addClick = () => {
             console.log('addClick')
             emit('click', '参数1')

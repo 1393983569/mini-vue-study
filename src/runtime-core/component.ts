@@ -4,6 +4,8 @@ import { shallowReadonly } from "../reactivity/reactive"
 import { emit } from "./componentEmit"
 import { initSlots } from "./componentSlot"
 
+let CurrentInstance = null
+
 export function createComponentInstance(vnode) {
     // 这里返回一个 component 结构的数据
     const component = {
@@ -43,6 +45,8 @@ export function setupStatefulComponent(instance) {
   const { setup, emit } = component
   // 这里需要判断一下，因为用户是不一定会写 setup 的，所以我们要给其一个默认值
   if (setup) {
+    // 获取当前组件实例
+    setCurrentInstance(instance)
     // 获取到 setup() 的返回值，这里有两种情况，如果返回的是 function，那么这个 function 将会作为组件的 render
     // 反之就是 setupState，将其注入到上下文中
     const setupResult = setup(shallowReadonly(instance.props), {
@@ -50,6 +54,7 @@ export function setupStatefulComponent(instance) {
     })
     handleSetupResult(instance, setupResult)
   }
+  setCurrentInstance(null)
 }
 
 function handleSetupResult(instance, setupResult) {
@@ -81,3 +86,10 @@ function finishComponentSetup(instance) {
   instance.render = component.render
 }
 
+function setCurrentInstance(currentInstance) {
+  CurrentInstance = currentInstance
+}
+
+export function getCurrentInstance() {
+  return CurrentInstance
+} 

@@ -1,7 +1,8 @@
-import { h, createTextVNode } from '../../lib/guide-mini-vue.esm.js'
+import { h, createTextVNode, getCurrentInstance } from '../../lib/guide-mini-vue.esm.js'
 import { foo } from './Foo.js'
 window.self = null
 export default {
+    name: 'App',
     render() {
         window.self = this
         return h(
@@ -22,6 +23,8 @@ export default {
         )
     },
     setup() {
+        const currentInstance = getCurrentInstance()
+        console.log('currentInstance:', currentInstance)
         return {
             msg: '去上班'
         }
