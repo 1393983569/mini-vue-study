@@ -1,4 +1,4 @@
-import { h, renderSlot, getCurrentInstance } from '../../lib/guide-mini-vue.esm.js'
+import { h, renderSlot, getCurrentInstance, provide, inject, createTextVNode } from '../../lib/guide-mini-vue.esm.js'
 /**
  * props实现
  * 1.props可以通过this访问
@@ -11,7 +11,38 @@ import { h, renderSlot, getCurrentInstance } from '../../lib/guide-mini-vue.esm.
  * 2.支持多个
  * 3.具名插槽
  * 4.作用域插槽
+ * 实现provide inject
  */
+ const injectCom1 =  {
+    name: 'injectCom',
+    setup() {
+        const injectVal = inject('foo')
+        return {
+            injectVal
+        }
+    },
+    render() {
+        return h('div', {}, this.injectVal)
+    },
+}
+
+const injectCom =  {
+    name: 'injectCom',
+    setup() {
+        provide('foo', 'provide:injectCom')
+        const injectVal = inject('foo')
+        return {
+            injectVal
+        }
+    },
+    render() {
+        return h('div', {}, [h(injectCom1), createTextVNode(this.injectVal)])
+    },
+}
+
+
+
+
 export const foo =  {
     name: 'foo',
     setup(props, { emit }) {
@@ -23,6 +54,7 @@ export const foo =  {
             emit('click', '参数1')
             emit('add-click', '参数2')
         }
+        provide('foo', 'provide:foo')
         return {
             addClick
         }
@@ -33,6 +65,6 @@ export const foo =  {
         const but = h('div', {
             onClick: this.addClick
         }, 'addClick')
-        return h('div', {}, [renderSlot(this.$slot, 'slot2', {age}), foo, but, renderSlot(this.$slot, 'slot1', {age})])
+        return h('div', {}, [renderSlot(this.$slot, 'slot2', {age}), foo, but, h(injectCom), renderSlot(this.$slot, 'slot1', {age})])
     },
 }

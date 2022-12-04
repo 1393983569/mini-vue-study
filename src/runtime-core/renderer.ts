@@ -2,9 +2,9 @@ import { createComponentInstance, setupComponent } from './component'
 import { ShapeFlags } from '../shared/shapeFlags'
 import { Fragment, Text } from './vnode'
 
-export function render(vnode, container) {
+export function render(vnode, container, praentComponent) {
     // 这里的 render 调用 patch 方法，方便对于子节点进行递归处理
-    patch(vnode, container)
+    patch(vnode, container, praentComponent)
 }
 
 /**
@@ -12,11 +12,11 @@ export function render(vnode, container) {
  * @param vnode 组件实例
  * @param container 根节点
  */
-function patch(vnode, container) {
+function patch(vnode, container, praentComponent) {
     const { shapeFlags, type } = vnode
     // 处理slot 为了解决dom被div包裹的问题，所以设置一个fragment类型来单独处理
     if (type === Fragment) {
-        processFragment(vnode, container)
+        processFragment(vnode, container, praentComponent)
     }
     else if (type === Text) {
         processText(vnode, container)
@@ -25,22 +25,22 @@ function patch(vnode, container) {
     // 区分element和component类型 element会返回一个string，component会返回一个对象
     else if (ShapeFlags.ELEMENT & shapeFlags) {
         // dom
-        processElement(vnode, container)
+        processElement(vnode, container, praentComponent)
     } else {
         // component
-        processComponent(vnode, container);
+        processComponent(vnode, container, praentComponent);
     }
 }
 
 
 
-function processElement(vnode: any, container: any) {
+function processElement(vnode: any, container: any, praentComponent) {
     // 这里分为初始化（mount）和更新（update）
-    mountElement(vnode, container)
+    mountElement(vnode, container, praentComponent)
 }
 
 // 处理element类型
-function mountElement(vnode: any, container: any) {
+function mountElement(vnode: any, container: any, praentComponent) {
     // vonde => element => div
     const el = (vnode.el = document.createElement(vnode.type))
     const { shapeFlags } = vnode
@@ -49,7 +49,7 @@ function mountElement(vnode: any, container: any) {
         el.textContent = vnode.children
         // 判断当前children是否是一个数组  例:[h('p', {class: 'blue'}, 'hello'), h('a', {class: 'blue'}, '去美甲')]
     } else if (ShapeFlags.ARRAY_CHILDREN & shapeFlags) {
-        mountChildren(vnode, el)
+        mountChildren(vnode, el, praentComponent)
     }
     const { props } = vnode
     // 处理props属性
@@ -69,20 +69,20 @@ function mountElement(vnode: any, container: any) {
     container.append(el)
 }
 
-function mountChildren(vnode, container) {
+function mountChildren(vnode, container, praentComponent) {
     vnode.children.forEach(item => {
-        patch(item, container)
+        patch(item, container, praentComponent)
     })
 }
 
 
-function processComponent(vnode, container) {
-    return mountComponent(vnode, container)
+function processComponent(vnode, container, parentComponent) {
+    return mountComponent(vnode, container, parentComponent)
 }
 
 // 处理frament slot
-function processFragment(vnode: any, container: any) {
-    mountChildren(vnode, container)
+function processFragment(vnode: any, container: any, praentComponent) {
+    mountChildren(vnode, container, praentComponent)
 }
 
 // 处理纯文本
@@ -97,9 +97,9 @@ function processText(vnode: any, container: any) {
  * @param vnode 组件实例
  * @param container 根节点
  */
-function mountComponent(initialVNode, container) {
+function mountComponent(initialVNode, container, parentComponent) {
     // 通过 vnode 获取组件实例
-    const instance = createComponentInstance(initialVNode)
+    const instance = createComponentInstance(initialVNode, parentComponent)
     // setup component
     // 初始化props 初始化slots 调用setupStatefulComponent处理 setup 的返回值
     setupComponent(instance)
@@ -119,7 +119,7 @@ function setupRenderEffect(instance, initialVNode, container) {
     // 调用 render 和 patch 挂载到 component
     const subTree = instance.render.call(proxy)
     // 下面就是 mountElement了（渲染dom）
-    patch(subTree, container)
+    patch(subTree, container, instance)
     // 待mountElement处理完成后就可以获取到div的实例也就是根节点
     initialVNode.el = subTree.el
 }

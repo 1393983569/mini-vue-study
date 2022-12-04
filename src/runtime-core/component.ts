@@ -6,7 +6,7 @@ import { initSlots } from "./componentSlot"
 
 let CurrentInstance = null
 
-export function createComponentInstance(vnode) {
+export function createComponentInstance(vnode, parent) {
     // 这里返回一个 component 结构的数据
     const component = {
         vnode,
@@ -16,6 +16,8 @@ export function createComponentInstance(vnode) {
         emit: () => {},
         slots: {},
         props: {},
+        provides: parent ? parent.provides : {},
+        parent
     }
     component.emit = emit.bind(null, component) as any
     return component
