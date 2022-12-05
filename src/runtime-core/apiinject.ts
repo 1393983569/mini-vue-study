@@ -6,17 +6,25 @@ export function provide(key, val) {
     if (currentInstance) {
         let { provides } = currentInstance
         const parentProvides = currentInstance.parent.provides
-        provides = currentInstance.provides = Object.create(parentProvides)
+        if (provides === parentProvides) {
+            // 利用原型链来存值
+            provides = currentInstance.provides = Object.create(parentProvides)
+        }
         provides[key] = val
     }
 }
 
-export function inject(key) {
+export function inject(key: any, defVal: any) {
     const currentInstance:any = getCurrentInstance()
-    let val = null
+    const parentProvides = currentInstance.parent.provides
     if (currentInstance) {
-        const { parent } = currentInstance
-        val = parent.provides[key]
+        if (key in parentProvides) {
+            return parentProvides[key]
+        } else {
+            if (typeof defVal === 'function') {
+                return defVal()
+            }
+            return defVal
+        }
     }
-    return val
 }

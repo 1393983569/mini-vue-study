@@ -17,12 +17,16 @@ import { h, renderSlot, getCurrentInstance, provide, inject, createTextVNode } f
     name: 'injectCom',
     setup() {
         const injectVal = inject('foo')
+        const injectVal2 = inject('foo2', '字符串默认值')
+        const injectVal3 = inject('foo3', () => '函数默认值')
         return {
-            injectVal
+            injectVal,
+            injectVal2,
+            injectVal3
         }
     },
     render() {
-        return h('div', {}, this.injectVal)
+        return h('div', {}, this.injectVal + '--------' + this.injectVal2  + '--------' +  this.injectVal3)
     },
 }
 
